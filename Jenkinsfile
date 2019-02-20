@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh './mvnw verify'
+                sh './mvnw package'
             }
         }
         stage('Publish') {
