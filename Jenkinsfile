@@ -1,5 +1,5 @@
 pipeline {
-    agent { label: 'ecs-java' }
+    agent { label 'ecs-java' }
     stages {
         stage('Checkout') {
             steps {
