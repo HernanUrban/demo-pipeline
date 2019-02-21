@@ -40,12 +40,8 @@ pipeline {
 	            expression { BRANCH_NAME ==~ /(develop)/ }
 	        }
             steps {
-              script {
-                sh("eval \$(aws ecr get-login --no-include-email --region us-east-1 | sed 's|https://||')")
-                docker.withRegistry('https://321208450064.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:Urbs') {
-                  docker.image('hurban/demo-pipeline').push()
-                }
-              }
+              sh 'aws ecr get-login --no-include-email --region us-east-1'
+              sh 'docker push 321208450064.dkr.ecr.us-east-1.amazonaws.com/hurban/demo-pipeline:latest'
 			}
         }
         stage('Deploy') {
