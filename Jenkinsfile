@@ -9,7 +9,7 @@ pipeline {
         stage('Build') {
             steps {
                 sh 'chmod +x ./mvnw'
-                sh './mvnw clean package -DskipTests'
+                sh './mvnw clean package'
             }
         }
         stage('Test') {
@@ -40,9 +40,11 @@ pipeline {
 	            expression { BRANCH_NAME ==~ /(develop)/ }
 	        }
             steps {
-              sh 'aws ecr get-login --no-include-email --region us-east-1'
-              sh 'docker tag hurban/demo-pipeline 321208450064.dkr.ecr.us-east-1.amazonaws.com/hurban/demo-pipeline'
-              sh 'docker push 321208450064.dkr.ecr.us-east-1.amazonaws.com/hurban/demo-pipeline'
+              script {
+                docker.withRegistry('https://321208450064.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:Urbs') {
+                  docker.image('hurban/demo-pipeline').push('latest')
+                }
+		      }
 			}
         }
         stage('Deploy') {
