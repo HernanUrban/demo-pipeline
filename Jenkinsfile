@@ -42,7 +42,7 @@ pipeline {
             steps {
               echo 'push to Image into repository/registry'
               script {
-                docker.withRegistry('https://321208450064.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:AWS-ECR-Publisher') {
+                docker.withRegistry('https://321208450064.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:Urbs') {
                   docker.image('hurban/demo-pipeline').push('latest')            
                 }
 		      }
