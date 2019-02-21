@@ -1,3 +1,9 @@
+target
+
+.settings/
+.idea/
+*.iml
+
 .gradle
 build
 out

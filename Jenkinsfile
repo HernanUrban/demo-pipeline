@@ -14,7 +14,7 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh './mvnw package'
+                sh './mvnw verify'
             }
         }
         stage('Publish') {
@@ -30,7 +30,9 @@ pipeline {
 	            expression { BRANCH_NAME ==~ /(develop)/ }
 	        }
             steps {
-                sh './mvnw dockerfile:build'
+              script {
+                docker.build('hurban/demo-pipeline')
+              }
             }
         }
         stage('Push') {
@@ -38,8 +40,13 @@ pipeline {
 	            expression { BRANCH_NAME ==~ /(develop)/ }
 	        }
             steps {
-                echo 'push to Image into repository/registry'
-            }
+              echo 'push to Image into repository/registry'
+              script {
+                docker.withRegistry('https://321208450064.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:AWS-ECR-Publisher') {
+                  docker.image('hurban/demo-pipeline').push('latest')            
+                }
+		      }
+			}
         }
         stage('Deploy') {
 	        when {
