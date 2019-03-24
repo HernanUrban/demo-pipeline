@@ -41,37 +41,25 @@ pipeline {
 	        }
             steps {
               script {
-                docker.withRegistry('https://321208450064.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:Urbs') {
+                docker.withRegistry('https://321208450064.dkr.ecr.us-east-1.amazonaws.com', 'ecr:us-east-1:AWS-ECR-Publisher') {
                   docker.image('hurban/demo-pipeline').push('latest')
                 }
 		      }
 			}
         }
         stage('Deploy') {
-	        when {
-	            expression { BRANCH_NAME ==~ /(develop)/ }
-	        }
+            when {
+                branch 'develop'
+            }
             steps {
-                echo 'deployment tasks'
+                echo 'Deploy to ECS'
+                script {
+                    withAWS(region:'us-east-1') {
+                       sh 'aws ecs update-service --cluster pipe-dev --service App-pipe-AR-dev --task-definition App-pipe-AR-dev --force-new-deployment'
+                    }
+                }
             }
         }
-    stage('Validate') {
-	  when {
-	        expression { BRANCH_NAME ==~ /(develop)/ }
-	  }
-	  steps{
-			echo 'Validatie application status through healthchecks'
-        	//script {
-            //	timeout(time: 60, unit: 'SECONDS') {
-            //    	waitUntil {
-            //        	sleep 5
-            //        	def r = sh script: "wget -q http://<host>:<port>/actuator/info -O /dev/null", returnStatus: true
-            //        	return r == 0
-            //    	}
-            //    }
-        	//}
-      }
-  	}
   }
   post {
     always{
