@@ -54,7 +54,7 @@ pipeline {
             steps {
                 echo 'Deploy to ECS'
                 script {
-                    withAWS(region:'us-east-1') {
+                    withAWS(region:'us-east-1',credentials:'AWS-ECR-Publisher') {
                        sh 'aws ecs update-service --cluster pipe-dev --service App-pipe-AR-dev --task-definition App-pipe-AR-dev --force-new-deployment'
                     }
                 }
